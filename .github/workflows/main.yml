@@ -6,9 +6,7 @@ on:
   workflow_dispatch:
 
   jobs:
-    runs-on: CICD
-
-    steps: ANT Build
-    uses: org/github-actions-reusable/.github/workflows/ci-build.yml@master
-    with:
-      ant_target: "compile test run"
+    Trigerring-workflow:
+      uses: dhakshna-learning/ci-cd-automation/.github/workflows/ci-build.yml@master
+      with:
+        ant_target: "compile test run"
