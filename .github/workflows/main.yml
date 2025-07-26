@@ -15,8 +15,9 @@ jobs:
       - name: Set output vars
         id: set-vars
         run: |
-          echo "JAVA_HOME=${{ vars.JAVA_HOME }}" >> $GITHUB_OUTPUT
-          echo "ANT_HOME=${{ vars.ANT_HOME }}" >> $GITHUB_OUTPUT
+          export JAVA_HOME=${{ vars.JAVA_HOME }}
+          export ANT_HOME=${{ vars.ANT_HOME }}
+          export PATH=${PATH}:${JAVA_HOME}/bin:${ANT_HOME}/bin
 
   Trigerring-workflow:
     needs: prepare-vars
