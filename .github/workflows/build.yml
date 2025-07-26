@@ -1,0 +1,30 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ "rnd_feature" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: CICD
+    environment: R&D
+
+    env:
+      JAVA_HOME: ${{ vars.JAVA_HOME }}
+      ANT_HOME: ${{ vars.ANT_HOME }}
+
+    steps:
+      - name: Tools Validation
+        run:  |
+              export JAVA_HOME=${{ vars.JAVA_HOME }}
+              export ANT_HOME=${{ vars.ANT_HOME }}
+              export PATH=${PATH}:${JAVA_HOME}/bin:${ANT_HOME}/bin
+              java -version
+              ant -version
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name:  ANT Build
+        run:   ${ANT_HOME}/bin/ant -buildfile build.xml
