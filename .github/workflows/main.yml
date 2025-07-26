@@ -5,8 +5,10 @@ on:
     branches: [ "rnd_feature" ]
   workflow_dispatch:
 
-  fork:
-  create:
-    uses: org/ci-cd-automation/.github/workflows/ci-build.yml@master
+  jobs:
+    runs-on: CICD
+
+    steps: ANT Build
+    uses: org/github-actions-reusable/.github/workflows/ci-build.yml@master
     with:
-      ant_target: test run
+      ant_target: "compile test run"
