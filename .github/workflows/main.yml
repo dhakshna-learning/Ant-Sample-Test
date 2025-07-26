@@ -5,10 +5,8 @@ on:
     branches: [ "rnd_feature" ]
   workflow_dispatch:
 
-  jobs:
-    Trigerring-workflow:
-      uses: dhakshna-learning/ci-cd-automation/.github/workflows/ci-build.yml@master
-      with:
-        ant_target: "compile test run"
-
-        
+jobs:
+  Trigerring-workflow:
+    uses: dhakshna-learning/ci-cd-automation/.github/workflows/ci-build.yml@master
+    with:
+      ant_target: "compile test run"
