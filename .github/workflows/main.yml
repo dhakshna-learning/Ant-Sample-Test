@@ -1,0 +1,12 @@
+name: CI Pipeline - Reusable
+
+on:
+  push:
+    branches: [ "rnd_feature" ]
+  workflow_dispatch:
+
+  fork:
+  create:
+    uses: org/ci-cd-automation/.github/workflows/ci-build.yml@master
+    with:
+      ant_target: test run
