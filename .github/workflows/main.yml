@@ -7,6 +7,7 @@ on:
 
 jobs:
   Trigerring-workflow:
+    environment: R&D
     uses: dhakshna-learning/ci-cd-automation/.github/workflows/ci-build.yml@master
     with:
       ant_target: "compile test run"
