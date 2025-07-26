@@ -6,22 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  prepare-vars:
-    runs-on: CICD
-    outputs:
-      JAVA_HOME: ${{ steps.set-vars.outputs.JAVA_HOME }}
-      ANT_HOME: ${{ steps.set-vars.outputs.ANT_HOME }}
-    steps:
-      - name: Set output vars
-        id: set-vars
-        run: |
-          echo "JAVA_HOME=${{ vars.JAVA_HOME }}" >> $GITHUB_OUTPUT
-          echo "ANT_HOME=${{ vars.ANT_HOME }}" >> $GITHUB_OUTPUT
-
   Trigerring-workflow:
-    needs: prepare-vars
     uses: dhakshna-learning/ci-cd-automation/.github/workflows/ci-build.yml@master
     with:
       ant_target: "compile test run"
-      java_home: "${{ needs.prepare-vars.outputs.JAVA_HOME }}"
-      ant_home: "${{ needs.prepare-vars.outputs.ANT_HOME }}"
