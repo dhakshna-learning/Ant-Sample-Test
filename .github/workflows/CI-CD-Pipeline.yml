@@ -13,6 +13,7 @@ on:
           - build
           - test
           - run
+run-name: Dev-CI-Pipeline:${{ inputs.ant_target }}
 
 jobs:
   CI-Build:
