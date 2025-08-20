@@ -1,25 +1,38 @@
-name: CI-CD Dev Pipeline
-
+name: CI-CD Dev Build Pipeline (with secrets)
 on:
-  workflow_dispatch:
+  workflow_dispatch:  
     inputs:
       ant_target:
-        description: 'Please choose the ant target'
+        description: 'Please choose the Ant Target:'
         required: true
         type: choice
         options:
-          - clean
-          - compile
           - build
+          - compile
           - test
-          - run
-run-name: Dev-CI-Pipeline:${{ inputs.ant_target }}
+      environment:
+        required: true
+        type: choice
+        options:
+          - Dev
+          - QA
+permissions:
+  id-token: write  
+  contents: read
 
 jobs:
   CI-Build:
-    name: CI build Pipeline
-    uses: dhakshna-learning/ci-cd-automation/.github/workflows/ci-build.yml@master
+    name: Test
+    uses: dhakshna-learning/ci-cd-automation/.github/workflows/test.yml@master
     with:
       ant_target: ${{ inputs.ant_target }}
+      environment: ${{ inputs.environment }}
+    secrets: inherit
 
-      
+  Upload-Artifact:
+    needs: CI-Build
+    name: Upload-Build_Artifact
+    uses: dhakshna-learning/ci-cd-automation/.github/workflows/upload-artifact.yml@master
+    with:
+      environment: ${{ inputs.environment }}
+    secrets: inherit
