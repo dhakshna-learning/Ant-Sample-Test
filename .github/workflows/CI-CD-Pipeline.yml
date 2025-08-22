@@ -29,10 +29,18 @@ jobs:
       environment: ${{ inputs.environment }}
     secrets: inherit
 
-  Upload-Artifact:
+  # Upload-Artifact:
+  #   needs: CI-Build
+  #   name: Upload-Build_Artifact
+  #   uses: dhakshna-learning/ci-cd-automation/.github/workflows/upload-artifact.yml@master
+  #   with:
+  #     environment: ${{ inputs.environment }}
+  #   secrets: inherit
+
+  send-Script:
     needs: CI-Build
-    name: Upload-Build_Artifact
-    uses: dhakshna-learning/ci-cd-automation/.github/workflows/upload-artifact.yml@master
+    name: send-script
+    uses: dhakshna-learning/ci-cd-automation/.github/workflows/centralized-script.yml@master
     with:
       environment: ${{ inputs.environment }}
     secrets: inherit
