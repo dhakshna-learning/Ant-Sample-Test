@@ -1,0 +1,57 @@
+<project name="ant-sample" basedir="." default="build">
+
+    <!-- properties -->
+    <property name="src.dir"     value="src"/>
+    <property name="build.dir"   value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="jar.dir"     value="${build.dir}/jar"/>
+    <property name="doc.dir"     value="doc"/>
+
+    <!-- versioning -->
+    <!-- Change this to 1.0.0 for release, or 1.0.0-SNAPSHOT for dev builds -->
+    <property name="version" value="1.0.0-SNAPSHOT"/>
+
+    <!-- generate timestamp for SNAPSHOTs -->
+    <tstamp>
+        <format property="build.timestamp" pattern="yyyyMMdd.HHmmss"/>
+    </tstamp>
+
+    <!-- derive artifact version -->
+    <condition property="artifact.version" value="${version}-${build.timestamp}" else="${version}">
+        <matches string="${version}" pattern=".*SNAPSHOT"/>
+    </condition>
+
+    <!-- targets -->
+    <target name="compile" description="compile project">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false"/>
+    </target>
+
+    <target name="jar" depends="compile" description="generate the distribution jar">
+        <mkdir dir="${jar.dir}"/>
+        <jar destfile="${jar.dir}/${ant.project.name}-${artifact.version}.jar" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="piona.Main"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="run" depends="jar" description="run application">
+        <java jar="${jar.dir}/${ant.project.name}-${artifact.version}.jar" fork="true"/>
+    </target>
+
+    <target name="build" depends="jar" description="build application"/>
+
+    <target name="doc" description="generate documentation">
+        <mkdir dir="${doc.dir}" />
+        <javadoc destdir="${doc.dir}" sourcepath="${src.dir}"/>
+    </target>
+
+    <target name="clean" description="clean up build files">
+        <delete dir="${build.dir}"/>
+        <delete dir="${doc.dir}" />
+    </target>
+
+    <target name="rebuild" depends="clean,build" description="rebuild application"/>
+
+</project>
