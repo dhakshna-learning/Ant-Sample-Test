@@ -38,7 +38,7 @@ jobs:
   #   secrets: inherit
 
   send-Script:
-    needs: CI-Build
+    # needs: CI-Build
     name: send-script
     uses: dhakshna-learning/ci-cd-automation/.github/workflows/centralized-script.yml@master
     with:
