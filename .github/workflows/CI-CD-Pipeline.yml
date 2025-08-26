@@ -21,24 +21,24 @@ permissions:
   contents: read
 
 jobs:
-  # CI-Build:
-  #   name: Test
-  #   uses: dhakshna-learning/ci-cd-automation/.github/workflows/test.yml@master
-  #   with:
-  #     ant_target: ${{ inputs.ant_target }}
-  #     environment: ${{ inputs.environment }}
-  #   secrets: inherit
+  CI-Build:
+    name: Test
+    uses: dhakshna-learning/ci-cd-automation/.github/workflows/test.yml@master
+    with:
+      ant_target: ${{ inputs.ant_target }}
+      environment: ${{ inputs.environment }}
+    secrets: inherit
 
-  # Upload-Artifact:
-  #   needs: CI-Build
-  #   name: Upload-Build_Artifact
-  #   uses: dhakshna-learning/ci-cd-automation/.github/workflows/upload-artifact.yml@master
-  #   with:
-  #     environment: ${{ inputs.environment }}
-  #   secrets: inherit
+  Upload-Artifact:
+    needs: CI-Build
+    name: Upload-Build_Artifact
+    uses: dhakshna-learning/ci-cd-automation/.github/workflows/upload-artifact.yml@master
+    with:
+      environment: ${{ inputs.environment }}
+    secrets: inherit
 
   send-Script:
-    # needs: CI-Build
+    needs: [CI-Build, Upload-Artifact]
     name: send-script
     uses: dhakshna-learning/ci-cd-automation/.github/workflows/centralized-script.yml@master
     with:
