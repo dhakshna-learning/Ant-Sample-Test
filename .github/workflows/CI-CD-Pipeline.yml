@@ -32,10 +32,10 @@ jobs:
   Upload-Artifact:
     needs: CI-Build
     name: Upload-Build_Artifact
-    uses: dhakshna-learning/ci-cd-automation/.github/workflows/upload-with-approve.yml@master
-    # with:
-    #   environment: ${{ inputs.environment }}
-    # secrets: inherit
+    uses: dhakshna-learning/ci-cd-automation/.github/workflows/deploy-on-approval.yml@master
+    with:
+      environment: ${{ inputs.environment }}
+    secrets: inherit
 
   # send-Script:
   #   needs: [CI-Build, Upload-Artifact]
