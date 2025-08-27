@@ -1,17 +1,8 @@
 {
-    "approverGroups": [
-        {
-            "approvers": [
-                {
-                    "name": "Dhakshnamoorthy M - DevOps", 
-                    "id": "DhakshnamoorthyM-DevOps"
-                },
-                {
-                    "name": "DhakshnamoorthyM - Cloud", 
-                    "id": "DhakshnamoorthyM-Cloud"
-                }
-            ],
-            "name": "PipelineAdmin"
-        }
+  "teams": {
+    "devops": [
+      { "name": "Dhakshnamoorthy M", "id": "DhakshnamoorthyM-Cloud" },
+      { "name": "Dhakshna-test", "id": "DhakshnamoorthyM-DevOps" }
     ]
+  }
 }
