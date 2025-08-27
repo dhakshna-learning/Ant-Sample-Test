@@ -37,6 +37,8 @@ jobs:
     uses: dhakshna-learning/ci-cd-automation/.github/workflows/deploy-on-approval.yml@master
     with:
       environment: ${{ inputs.environment }}
+      issue_number: ${{ needs.CI-Build.outputs.issue_number }}
+      run_number: ${{ needs.CI-Build.outputs.run_number }}
     secrets: inherit
 
   # send-Script:
