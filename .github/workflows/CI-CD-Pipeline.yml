@@ -32,16 +32,16 @@ jobs:
   Upload-Artifact:
     needs: CI-Build
     name: Upload-Build_Artifact
-    uses: dhakshna-learning/ci-cd-automation/.github/workflows/upload-artifact.yml@master
-    with:
-      environment: ${{ inputs.environment }}
-    secrets: inherit
+    uses: dhakshna-learning/ci-cd-automation/.github/workflows/upload-with-approve.yml@master
+    # with:
+    #   environment: ${{ inputs.environment }}
+    # secrets: inherit
 
-  send-Script:
-    needs: [CI-Build, Upload-Artifact]
-    name: send-script
-    uses: dhakshna-learning/ci-cd-automation/.github/workflows/centralized-script.yml@master
-    with:
-      ant_target: ${{ inputs.ant_target }}
-      environment: ${{ inputs.environment }}
-    secrets: inherit
+  # send-Script:
+  #   needs: [CI-Build, Upload-Artifact]
+  #   name: send-script
+  #   uses: dhakshna-learning/ci-cd-automation/.github/workflows/centralized-script.yml@master
+  #   with:
+  #     ant_target: ${{ inputs.ant_target }}
+  #     environment: ${{ inputs.environment }}
+  #   secrets: inherit
