@@ -24,22 +24,22 @@ permissions:
 jobs:
   CI-Build:
     name: Test
-    uses: dhakshna-learning/ci-cd-automation/.github/workflows/build-with-approver.yml@master
+    uses: dhakshna-learning/ci-cd-automation/.github/workflows/ant-build.yml@master
     with:
       ant_target: ${{ inputs.ant_target }}
       environment: ${{ inputs.environment }}
     secrets: inherit
  
 
-  Upload-Artifact:
-    needs: CI-Build
-    name: Upload-Build_Artifact
-    uses: dhakshna-learning/ci-cd-automation/.github/workflows/deploy-on-approval.yml@master
-    with:
-      environment: ${{ inputs.environment }}
-      issue_number: ${{ needs.CI-Build.outputs.issue_number }}
-      run_number: ${{ needs.CI-Build.outputs.run_number }}
-    secrets: inherit
+  # Upload-Artifact:
+  #   needs: CI-Build
+  #   name: Upload-Build_Artifact
+  #   uses: dhakshna-learning/ci-cd-automation/.github/workflows/deploy-on-approval.yml@master
+  #   with:
+  #     environment: ${{ inputs.environment }}
+  #     issue_number: ${{ needs.CI-Build.outputs.issue_number }}
+  #     run_number: ${{ needs.CI-Build.outputs.run_number }}
+  #   secrets: inherit
 
   # send-Script:
   #   needs: [CI-Build, Upload-Artifact]
