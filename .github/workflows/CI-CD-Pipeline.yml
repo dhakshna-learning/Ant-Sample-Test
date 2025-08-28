@@ -34,6 +34,15 @@ jobs:
       environment: ${{ inputs.Environment }}
       jira_ref: ${{ inputs.JIRA_REF }}
     secrets: inherit
+
+  CD-Deployment:
+    name: Demo
+    needs: CI-Build
+    uses: dhakshna-learning/ci-cd-automation/.github/workflows/ant-deployment.yml@master
+    with:
+      environment: ${{ inputs.Environment }}
+      jira_ref: ${{ inputs.JIRA_REF }}
+    secrets: inherit
  
 
   # Upload-Artifact:
