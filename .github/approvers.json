@@ -1,7 +1,6 @@
 {
   "teams": {
     "devops": [
-      { "name": "Dhakshnamoorthy M", "id": "DhakshnamoorthyM-Cloud" },
       { "name": "Dhakshna-test", "id": "DhakshnamoorthyM-DevOps" }
     ]
   }
