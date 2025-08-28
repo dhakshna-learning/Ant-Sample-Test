@@ -42,6 +42,7 @@ jobs:
     with:
       environment: ${{ inputs.Environment }}
       jira_ref: ${{ inputs.JIRA_REF }}
+      issue_number: ${{ needs.CI-Build.outputs.issue_number }}
     secrets: inherit
  
 
