@@ -2,7 +2,7 @@ name: CI-CD Dev Build Pipeline (with Approvals)
 on:
   workflow_dispatch:  
     inputs:
-      ant_target:
+      Action:
         description: 'Please choose the Ant Target:'
         required: true
         type: choice
@@ -10,12 +10,16 @@ on:
           - build
           - compile
           - test
-      environment:
+      Environment:
         required: true
         type: choice
         options:
           - Dev
           - QA
+      JIRA_REF:
+        description: 'Please mention the Jira ID for the release initiation'
+        required: true
+        type: string
 permissions:
   id-token: write  
   contents: read
@@ -26,8 +30,9 @@ jobs:
     name: Test
     uses: dhakshna-learning/ci-cd-automation/.github/workflows/ant-build.yml@master
     with:
-      ant_target: ${{ inputs.ant_target }}
-      environment: ${{ inputs.environment }}
+      ant_target: ${{ inputs.Action }}
+      environment: ${{ inputs.Environment }}
+      jira_ref: ${{ inputs.JIRA_REF }}
     secrets: inherit
  
 
