@@ -1,4 +1,4 @@
-name: CI-CD Dev Build Pipeline (with secrets)
+name: CI-CD Dev Build Pipeline (with Approvals)
 on:
   workflow_dispatch:  
     inputs:
