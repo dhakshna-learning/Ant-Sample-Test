@@ -1,25 +1,74 @@
-name: CI-CD Dev Pipeline
-
+name: CI-CD Dev Build Pipeline (with Approvals)
 on:
-  workflow_dispatch:
+  workflow_dispatch:  
     inputs:
-      ant_target:
-        description: 'Please choose the ant target'
+      Action:
+        description: 'Please choose the Ant Target:'
         required: true
         type: choice
         options:
-          - clean
-          - compile
           - build
+          - compile
           - test
-          - run
-run-name: Dev-CI-Pipeline:${{ inputs.ant_target }}
+      Environment:
+        required: true
+        type: choice
+        options:
+          - Dev
+          - QA
+      JIRA_REF:
+        description: 'Please mention the Jira ID for the release initiation'
+        required: true
+        type: string
+      Promote2Qa:
+        description: "Please select if you want to deploy the application in QA. (Please leave blank if you don't want to promote)"
+        required: true
+        type: boolean
+
+        
+
+permissions:
+  id-token: write  
+  contents: read
+  issues: write
 
 jobs:
   CI-Build:
-    name: CI build Pipeline
-    uses: dhakshna-learning/ci-cd-automation/.github/workflows/ci-build.yml@master
+    name: Test
+    uses: dhakshna-learning/ci-cd-automation/.github/workflows/ant-build.yml@master
     with:
-      ant_target: ${{ inputs.ant_target }}
+      ant_target: ${{ inputs.Action }}
+      environment: ${{ inputs.Environment }}
+      jira_ref: ${{ inputs.JIRA_REF }}
+    secrets: inherit
 
-      
+  CD-Deployment:
+    name: Demo
+    needs: CI-Build
+    uses: dhakshna-learning/ci-cd-automation/.github/workflows/ant-deployment.yml@master
+    with:
+      environment: ${{ inputs.Environment }}
+      jira_ref: ${{ inputs.JIRA_REF }}
+      issue_number: ${{ needs.CI-Build.outputs.issue_number }}
+      approvers: ${{ needs.CI-Build.outputs.devops_ids }}
+    secrets: inherit
+ 
+
+  # Upload-Artifact:
+  #   needs: CI-Build
+  #   name: Upload-Build_Artifact
+  #   uses: dhakshna-learning/ci-cd-automation/.github/workflows/deploy-on-approval.yml@master
+  #   with:
+  #     environment: ${{ inputs.environment }}
+  #     issue_number: ${{ needs.CI-Build.outputs.issue_number }}
+  #     run_number: ${{ needs.CI-Build.outputs.run_number }}
+  #   secrets: inherit
+
+  # send-Script:
+  #   needs: [CI-Build, Upload-Artifact]
+  #   name: send-script
+  #   uses: dhakshna-learning/ci-cd-automation/.github/workflows/centralized-script.yml@master
+  #   with:
+  #     ant_target: ${{ inputs.ant_target }}
+  #     environment: ${{ inputs.environment }}
+  #   secrets: inherit
