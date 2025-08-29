@@ -20,13 +20,11 @@ on:
         description: 'Please mention the Jira ID for the release initiation'
         required: true
         type: string
-      Promote:
-        description: 'Please select the environments that you want to proceed the deployments'
+      Promote2Qa:
+        description: "Please select if you want to deploy the application in QA. (Please leave blank if you don't want to promote)"
         required: true
         type: boolean
-        options:
-          - QA
-          - LIVE
+
         
 
 permissions:
