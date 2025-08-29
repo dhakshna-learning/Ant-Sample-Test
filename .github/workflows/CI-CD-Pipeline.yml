@@ -43,7 +43,7 @@ jobs:
       environment: ${{ inputs.Environment }}
       jira_ref: ${{ inputs.JIRA_REF }}
       issue_number: ${{ needs.CI-Build.outputs.issue_number }}
-      approvers: ${{ needs.Initialising.outputs.devops_ids }}
+      approvers: ${{ needs.CI-Build.outputs.devops_ids }}
     secrets: inherit
  
 
