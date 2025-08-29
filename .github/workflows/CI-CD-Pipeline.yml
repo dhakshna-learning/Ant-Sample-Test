@@ -20,6 +20,12 @@ on:
         description: 'Please mention the Jira ID for the release initiation'
         required: true
         type: string
+      Promote:
+        description: 'Please select the environments that you want to proceed the deployments'
+        required: true
+        type: boolean
+        
+
 permissions:
   id-token: write  
   contents: read
