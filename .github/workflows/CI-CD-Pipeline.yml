@@ -21,7 +21,7 @@ on:
         required: true
         type: string
       Promote2Qa:
-        description: "Please select if you want to deploy the application in QA. (Please leave blank if you don't want to promote)"
+        description: "Please select if you want to deploy the application in QA. (Please leave empty if you don't want to promote)"
         required: true
         type: boolean
 
