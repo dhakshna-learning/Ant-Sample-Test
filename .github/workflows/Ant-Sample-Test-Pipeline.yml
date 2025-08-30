@@ -103,12 +103,14 @@ jobs:
       branch: ${{ github.ref }}
     secrets: inherit
 
-  # CI-Build:
-  #   name: Application Build Pipeline
-  #   needs: [basic-checks, Snyk-Test]
-  #   uses: dhakshna-learning/ci-cd-automation/.github/workflows/ant-build.yml@master
-  #   with:
-  #     ant_target: ${{ inputs.Action }}
-  #     environment: ${{ inputs.Environment }}
-  #     jira_ref: ${{ inputs.jira_ref }}
-  #   secrets: inherit
+  CI-Build:
+    name: Application Build Pipeline
+    needs: [basic-checks, Snyk-Test]
+    uses: dhakshna-learning/ci-cd-automation/.github/workflows/ant-build.yml@master
+    with:
+      ant_target: ${{ inputs.Action }}
+      environment: ${{ inputs.Environment }}
+      branch: ${{ github.ref }}
+      jira_ref: ${{ inputs.jira_ref }}
+      debug: ${{ inputs.Debug }}
+    secrets: inherit
