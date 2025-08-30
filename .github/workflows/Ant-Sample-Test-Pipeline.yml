@@ -57,7 +57,7 @@ jobs:
         env:
           ENVIRONMENT: ${{ inputs.Environment }}
           JIRA_REF: ${{ inputs.jira_ref }}
-          BRANCH: ${{ github.ref }} >> $GITHUB_ENV
+          BRANCH: ${{ github.ref }}
         run: |
           branch_check() {
             if [ "$ENVIRONMENT" == "Live" ] && [ "$BRANCH" != "refs/heads/main" ]; then
@@ -91,7 +91,7 @@ jobs:
         if: ${{ inputs.Environmnt }} != "Dev"
         uses: dhakshna-learning/ci-cd-automation/.github/actions/get-ids@master
         with:
-          branch: "$BRANCH"
+          branch: ${{ github.ref }}
           debug: ${{ inputs.Debug }}
 
   # Snyk-Test:
