@@ -57,7 +57,7 @@ jobs:
         env:
           ENVIRONMENT: ${{ inputs.Environment }}
           JIRA_REF: ${{ inputs.jira_ref }}
-          BRANCH: ${{ github.ref }}
+          BRANCH: ${{ github.ref }} >> $GITHUB_ENV
         run: |
           branch_check() {
             if [ "$ENVIRONMENT" == "Live" ] && [ "$BRANCH" != "refs/heads/main" ]; then
