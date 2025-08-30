@@ -114,7 +114,7 @@ jobs:
   Snyk-Test:
     name: Snyk Scan Artifacts
     needs: basic-checks
-    uses: dhakshna-learning/ci-cd-automation/.github/workflows/Snyk.yml@master
+    uses: dhakshna-learning/ci-cd-automation/.github/workflows/snyk.yml@master
     with:
       environment: ${{ inputs.Environment }}
       secrets: inherit
