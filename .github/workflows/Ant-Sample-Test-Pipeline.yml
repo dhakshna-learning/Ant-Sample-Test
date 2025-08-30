@@ -47,68 +47,69 @@ permissions:
 
 jobs:
   basic-checks:
-  runs-on: ubuntu-latest
-  environment: ${{ inputs.Environment }}
-  outputs:
-    devops_ids: ${{ steps.fetch_approvers.outputs.devops_ids }}
-  steps:
-    - name: Validate Inputs
-      run: |
-        branch_check()
-        {
-          if [ "${{ github.event.inputs.Environment }}" == "Live" ] && [ "${{ github.ref }}" != "refs/heads/main" ]; then
-            echo "❌ Deployments to LIVE environment are only allowed from the main branch."
-            exit 1
-          elif [ "${{ github.event.inputs.Environment }}" == "Drmt" ] && [ "${{ github.ref }}" != "refs/heads/main" ]; then
-            echo "❌ Deployments to DRMT environment are only allowed from the main branch."
-            exit 1
-          elif [ "${{ github.event.inputs.Environment }}" == "Tst" ] && [ "${{ github.ref }}" != "refs/heads/main" ]; then
-            echo "❌ Deployments to TST environment are only allowed from the main branch."
-            exit 1
-          elif [ "${{ github.event.inputs.Environment }}" == "Dev" ] && [[ ! "${{ github.ref }}" =~ refs/heads/feat/.* ]]; then
-            echo "❌ Error: Deployments to DEV environment are only allowed from the develop branch."
-            exit 1
-          else
-            echo "✅ Branch validation passed."
-          fi
-        }
-
-        branch_check #funtion to check the branching pattern
-
-        # Check if Jira-Ref is provided for non-Dev environments
-
-        if [[ ${{ inputs.Environment != 'Dev' && (inputs.Jira-Ref == '' || inputs.Jira-Ref == "null" || inputs.Jira-Ref == "N/A" || inputs.Jira-Ref == "na") }} ]]; then        
-          echo "❌ Jira-Ref is required for environment ${{ inputs.Environment }}."
-          exit 1
-        fi
-
-        echo "✅ All inputs are valid."
-        
-    - name: Checkout Code
-      uses: actions/checkout@v4
-
-    - name: Retrieve approver IDs
-      id: fetch_approvers
-      run: |
-        DATA_FILE=".github/approvers.json"
-        TEAMS=$(jq -r '.teams | keys[]' "$DATA_FILE")
-        
-        for team in $TEAMS; do
-            # Extract IDs for the team
-            user_ids=$(jq -r --arg team "$team" '.teams[$team][]?.id' "$DATA_FILE" | sort -u | paste -sd "," -)
-        
-            if [[ -n "$user_ids" ]]; then
-                echo "${team,,}_ids=$user_ids" >> "$GITHUB_OUTPUT"
-                echo "$team IDs: $user_ids"
+    name: Basic Validations
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.Environment }}
+    outputs:
+      devops_ids: ${{ steps.fetch_approvers.outputs.devops_ids }}
+    steps:
+      - name: Validate Inputs
+        run: |
+          branch_check()
+          {
+            if [ "${{ github.event.inputs.Environment }}" == "Live" ] && [ "${{ github.ref }}" != "refs/heads/main" ]; then
+              echo "❌ Deployments to LIVE environment are only allowed from the main branch."
+              exit 1
+            elif [ "${{ github.event.inputs.Environment }}" == "Drmt" ] && [ "${{ github.ref }}" != "refs/heads/main" ]; then
+              echo "❌ Deployments to DRMT environment are only allowed from the main branch."
+              exit 1
+            elif [ "${{ github.event.inputs.Environment }}" == "Tst" ] && [ "${{ github.ref }}" != "refs/heads/main" ]; then
+              echo "❌ Deployments to TST environment are only allowed from the main branch."
+              exit 1
+            elif [ "${{ github.event.inputs.Environment }}" == "Dev" ] && [[ ! "${{ github.ref }}" =~ refs/heads/feat/.* ]]; then
+              echo "❌ Error: Deployments to DEV environment are only allowed from the develop branch."
+              exit 1
             else
-                echo "Skipping $team (no approvers found)"
+              echo "✅ Branch validation passed."
             fi
-        done
+          }
 
-    - name: Debug Outputs
-      if: ${{ inputs.Debug == true }}
-      run: |
-        echo -e "devops_ids: ${{ steps.fetch_approvers.outputs.devops_ids }}"
+          branch_check #funtion to check the branching pattern
+
+          # Check if Jira-Ref is provided for non-Dev environments
+
+          if [[ ${{ inputs.Environment != 'Dev' && (inputs.Jira-Ref == '' || inputs.Jira-Ref == "null" || inputs.Jira-Ref == "N/A" || inputs.Jira-Ref == "na") }} ]]; then        
+            echo "❌ Jira-Ref is required for environment ${{ inputs.Environment }}."
+            exit 1
+          fi
+
+          echo "✅ All inputs are valid."
+          
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Retrieve approver IDs
+        id: fetch_approvers
+        run: |
+          DATA_FILE=".github/approvers.json"
+          TEAMS=$(jq -r '.teams | keys[]' "$DATA_FILE")
+          
+          for team in $TEAMS; do
+              # Extract IDs for the team
+              user_ids=$(jq -r --arg team "$team" '.teams[$team][]?.id' "$DATA_FILE" | sort -u | paste -sd "," -)
+          
+              if [[ -n "$user_ids" ]]; then
+                  echo "${team,,}_ids=$user_ids" >> "$GITHUB_OUTPUT"
+                  echo "$team IDs: $user_ids"
+              else
+                  echo "Skipping $team (no approvers found)"
+              fi
+          done
+
+      - name: Debug Outputs
+        if: ${{ inputs.Debug == true }}
+        run: |
+          echo -e "devops_ids: ${{ steps.fetch_approvers.outputs.devops_ids }}"
         
 
   Snyk-Test:
