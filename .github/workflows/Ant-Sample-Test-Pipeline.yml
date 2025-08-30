@@ -117,7 +117,7 @@ jobs:
     uses: dhakshna-learning/ci-cd-automation/.github/workflows/snyk.yml@master
     with:
       environment: ${{ inputs.Environment }}
-      secrets: inherit
+    secrets: inherit
 
   CI-Build:
     name: Application Build Pipeline
