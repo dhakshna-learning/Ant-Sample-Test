@@ -86,47 +86,28 @@ jobs:
           fi
 
           echo "✅ All inputs are valid."
-          
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          ref: "$BRANCH"
 
       - name: Retrieve approver IDs
-        id: fetch_approvers
-        run: |
-          DATA_FILE=".github/approvers.json"
-          TEAMS=$(jq -r '.teams | keys[]' "$DATA_FILE")
-          
-          for team in $TEAMS; do
-              user_ids=$(jq -r --arg team "$team" '.teams[$team][]?.id' "$DATA_FILE" | sort -u | paste -sd "," -)
-              if [[ -n "$user_ids" ]]; then
-                  echo "${team,,}_ids=$user_ids" >> "$GITHUB_OUTPUT"
-                  echo "$team IDs: $user_ids"
-              else
-                  echo "Skipping $team (no approvers found)"
-              fi
-          done
+        if: ${{ inputs.Environmnt }} != "Dev"
+        uses: dhakshna-learning/ci-cd-automation/.github/actions/get-ids@master
+        with:
+          branch: "$BRANCH"
+          debug: ${{ inputs.Debug }}
 
-      - name: Debug Outputs
-        if: ${{ inputs.Debug == true }}
-        run: |
-          echo "devops_ids: ${{ steps.fetch_approvers.outputs.devops_ids }}"
+  # Snyk-Test:
+  #   name: Snyk Scan Artifacts
+  #   needs: basic-checks
+  #   uses: dhakshna-learning/ci-cd-automation/.github/workflows/Snyk.yml@master
+  #   with:
+  #     environment: ${{ inputs.Environment }}
+  #   secrets: inherit
 
-  Snyk-Test:
-    name: Snyk Scan Artifacts
-    needs: basic-checks
-    uses: dhakshna-learning/ci-cd-automation/.github/workflows/Snyk.yml@main
-    with:
-      environment: ${{ inputs.Environment }}
-    secrets: inherit
-
-  CI-Build:
-    name: Application Build Pipeline
-    needs: [basic-checks, Snyk-Test]
-    uses: dhakshna-learning/ci-cd-automation/.github/workflows/ant-build.yml@main
-    with:
-      ant_target: ${{ inputs.Action }}
-      environment: ${{ inputs.Environment }}
-      jira_ref: ${{ inputs.jira_ref }}
-    secrets: inherit
+  # CI-Build:
+  #   name: Application Build Pipeline
+  #   needs: [basic-checks, Snyk-Test]
+  #   uses: dhakshna-learning/ci-cd-automation/.github/workflows/ant-build.yml@master
+  #   with:
+  #     ant_target: ${{ inputs.Action }}
+  #     environment: ${{ inputs.Environment }}
+  #     jira_ref: ${{ inputs.jira_ref }}
+  #   secrets: inherit
