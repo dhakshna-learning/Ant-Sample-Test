@@ -94,13 +94,14 @@ jobs:
           branch: ${{ github.ref }}
           debug: ${{ inputs.Debug }}
 
-  # Snyk-Test:
-  #   name: Snyk Scan Artifacts
-  #   needs: basic-checks
-  #   uses: dhakshna-learning/ci-cd-automation/.github/workflows/snyk.yml@master
-  #   with:
-  #     environment: ${{ inputs.Environment }}
-  #   secrets: inherit
+  Snyk-Test:
+    name: Snyk Scan Artifacts
+    needs: basic-checks
+    uses: dhakshna-learning/ci-cd-automation/.github/workflows/snyk.yml@master
+    with:
+      environment: ${{ inputs.Environment }}
+      branch: ${{ github.ref }}
+    secrets: inherit
 
   # CI-Build:
   #   name: Application Build Pipeline
