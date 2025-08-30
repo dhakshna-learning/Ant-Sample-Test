@@ -1,0 +1,130 @@
+name: Application Build and Deployment
+
+on:
+  workflow_dispatch:  
+    inputs:
+      Action:
+        description: 'Please choose the Ant Target:'
+        required: true
+        type: choice
+        options:
+          - build
+          - compile
+          - test
+      Environment:
+        required: true
+        type: choice
+        options:
+          - Dev
+          - Tst
+          - Drmt
+          - Live
+      jira_ref:
+        description: "Please mention the Jira ID for the release initiation (Mention if you're implementing the build and deployment on REG/PRL/PRD)"
+        required: false
+        type: string
+      Promote2tst:
+        description: "Deploy the application in QA?"
+        required: true
+        type: boolean
+      Promote2drmt:
+        description: "Deploy the application in Dormant?"
+        required: true
+        type: boolean
+      Promote2live:
+        description: "Deploy the application in Live?"
+        required: true
+        type: boolean
+      Debug:
+        description: "Enable debug logs?"
+        required: false
+        type: boolean       
+
+permissions:
+  id-token: write  
+  contents: read
+  issues: write
+
+jobs:
+  basic-checks:
+    name: Basic Validations
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.Environment }}
+    outputs:
+      devops_ids: ${{ steps.fetch_approvers.outputs.devops_ids }}
+    steps:
+      - name: Validate Inputs
+        env:
+          ENVIRONMENT: ${{ inputs.Environment }}
+          JIRA_REF: ${{ inputs.jira_ref }}
+          BRANCH: ${{ github.ref }}
+        run: |
+          branch_check() {
+            if [ "$ENVIRONMENT" == "Live" ] && [ "$BRANCH" != "refs/heads/main" ]; then
+              echo "❌ Deployments to LIVE are only allowed from main branch."
+              exit 1
+            elif [ "$ENVIRONMENT" == "Drmt" ] && [ "$BRANCH" != "refs/heads/main" ]; then
+              echo "❌ Deployments to DRMT are only allowed from main branch."
+              exit 1
+            elif [ "$ENVIRONMENT" == "Tst" ] && [ "$BRANCH" != "refs/heads/main" ]; then
+              echo "❌ Deployments to TST are only allowed from main branch."
+              exit 1
+            elif [ "$ENVIRONMENT" == "Dev" ] && [[ ! "$BRANCH" =~ refs/heads/feat/.* ]]; then
+              echo "❌ Deployments to DEV are only allowed from feature branches."
+              exit 1
+            else
+              echo "✅ Branch validation passed."
+            fi
+          }
+
+          branch_check
+
+          # Jira check for non-Dev
+          if [ "$ENVIRONMENT" != "Dev" ] && { [ -z "$JIRA_REF" ] || [ "$JIRA_REF" == "null" ] || [ "$JIRA_REF" == "N/A" ] || [ "$JIRA_REF" == "na" ]; }; then
+            echo "❌ Jira reference is required for environment $ENVIRONMENT."
+            exit 1
+          fi
+
+          echo "✅ All inputs are valid."
+          
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Retrieve approver IDs
+        id: fetch_approvers
+        run: |
+          DATA_FILE=".github/approvers.json"
+          TEAMS=$(jq -r '.teams | keys[]' "$DATA_FILE")
+          
+          for team in $TEAMS; do
+              user_ids=$(jq -r --arg team "$team" '.teams[$team][]?.id' "$DATA_FILE" | sort -u | paste -sd "," -)
+              if [[ -n "$user_ids" ]]; then
+                  echo "${team,,}_ids=$user_ids" >> "$GITHUB_OUTPUT"
+                  echo "$team IDs: $user_ids"
+              else
+                  echo "Skipping $team (no approvers found)"
+              fi
+          done
+
+      - name: Debug Outputs
+        if: ${{ inputs.Debug == true }}
+        run: |
+          echo "devops_ids: ${{ steps.fetch_approvers.outputs.devops_ids }}"
+
+  Snyk-Test:
+    name: Snyk Scan Artifacts
+    needs: basic-checks
+    uses: dhakshna-learning/ci-cd-automation/.github/workflows/Snyk.yml@main
+    with:
+      environment: ${{ inputs.Environment }}
+      secrets: inherit
+
+  CI-Build:
+    name: Application Build Pipeline
+    needs: [basic-checks, Snyk-Test]
+    uses: dhakshna-learning/ci-cd-automation/.github/workflows/ant-build.yml@main
+    with:
+      ant_target: ${{ inputs.Action }}
+      environment: ${{ inputs.Environment }}
+      jira_ref: ${{ inputs.jira_ref }}
+    secrets: inherit
