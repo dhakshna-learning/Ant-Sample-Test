@@ -89,6 +89,8 @@ jobs:
           
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          ref: "$BRANCH"
 
       - name: Retrieve approver IDs
         id: fetch_approvers
@@ -117,7 +119,7 @@ jobs:
     uses: dhakshna-learning/ci-cd-automation/.github/workflows/Snyk.yml@main
     with:
       environment: ${{ inputs.Environment }}
-      secrets: inherit
+    secrets: inherit
 
   CI-Build:
     name: Application Build Pipeline
