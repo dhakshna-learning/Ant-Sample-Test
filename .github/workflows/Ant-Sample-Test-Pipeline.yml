@@ -89,6 +89,8 @@ jobs:
           
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          ref: "$BRANCH"
 
       - name: Retrieve approver IDs
         id: fetch_approvers
@@ -114,7 +116,7 @@ jobs:
   Snyk-Test:
     name: Snyk Scan Artifacts
     needs: basic-checks
-    uses: dhakshna-learning/ci-cd-automation/.github/workflows/snyk.yml@master
+    uses: dhakshna-learning/ci-cd-automation/.github/workflows/Snyk.yml@main
     with:
       environment: ${{ inputs.Environment }}
     secrets: inherit
@@ -122,7 +124,7 @@ jobs:
   CI-Build:
     name: Application Build Pipeline
     needs: [basic-checks, Snyk-Test]
-    uses: dhakshna-learning/ci-cd-automation/.github/workflows/ant-build.yml@master
+    uses: dhakshna-learning/ci-cd-automation/.github/workflows/ant-build.yml@main
     with:
       ant_target: ${{ inputs.Action }}
       environment: ${{ inputs.Environment }}
