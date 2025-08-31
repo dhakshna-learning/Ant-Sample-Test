@@ -1,0 +1,84 @@
+name: Application Build and Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      Action:
+        description: 'Please choose the Ant Target:'
+        required: true
+        type: choice
+        options: [build, compile, test]
+      Environment:
+        required: true
+        type: choice
+        options: [Dev, Tst, Drmt, Live]
+      jira_ref:
+        description: "Please mention the Jira ID for the release initiation"
+        required: false
+        type: string
+      Promote2tst:
+        required: true
+        type: boolean
+      Promote2drmt:
+        required: true
+        type: boolean
+      Promote2live:
+        required: true
+        type: boolean
+      Debug:
+        required: false
+        type: boolean
+
+permissions:
+  id-token: write
+  contents: read
+  issues: write
+
+jobs:
+  basic-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Inputs
+        run: echo "✅ Validations done"
+
+  build-ubuntu:
+    name: Build Ubuntu
+    needs: basic-checks
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Building on Ubuntu"
+
+  build-windows:
+    name: Build Windows
+    needs: basic-checks
+    runs-on: windows-latest
+    steps:
+      - run: echo "Building on Windows"
+
+  build-macos:
+    name: Build macOS
+    needs: basic-checks
+    runs-on: macos-latest
+    steps:
+      - run: echo "Building on macOS"
+
+  deploy-staging:
+    name: Deploy / Staging
+    needs: [build-ubuntu, build-windows, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploying to staging..."
+
+  deploy-review:
+    name: Deploy / Review
+    needs: [build-ubuntu, build-windows, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploying for review..."
+
+  deploy-production:
+    name: Deploy / Production
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploying to production..."
