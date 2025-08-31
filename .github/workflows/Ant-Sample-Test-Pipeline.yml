@@ -114,6 +114,7 @@ jobs:
       branch: ${{ github.ref }}
       jira_ref: ${{ inputs.jira_ref }}
       debug: ${{ inputs.Debug }}
+      approvers: ${{ needs.basic-checks.outputs.devops_ids }}
     secrets: inherit
 
   CD-Deployment:
