@@ -114,3 +114,14 @@ jobs:
       jira_ref: ${{ inputs.jira_ref }}
       debug: ${{ inputs.Debug }}
     secrets: inherit
+
+  CD-Deployment:
+    name: Application Deployment Pipeline
+    needs: [basic-checks, Snyk-Test, CI-Build]
+    uses: dhakshna-learning/ci-cd-automation/.github/workflows/ant-deployment.yml@master
+    with:
+      environment: ${{ inputs.Environment }}
+      jira_ref: ${{ inputs.JIRA_REF }}
+      issue_number: ${{ needs.CI-Build.outputs.issue_number }}
+      approvers: ${{ needs.basic-checks.outputs.devops_ids }}
+    secrets: inherit
