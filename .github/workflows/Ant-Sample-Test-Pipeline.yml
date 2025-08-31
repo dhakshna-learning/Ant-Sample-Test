@@ -88,6 +88,7 @@ jobs:
           echo "✅ All inputs are valid."
 
       - name: Retrieve approver IDs
+        id: fetch_approvers
         if: ${{ inputs.Environment != 'Dev' }}
         uses: dhakshna-learning/ci-cd-automation/.github/actions/get-ids@master
         with:
