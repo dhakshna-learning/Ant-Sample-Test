@@ -23,16 +23,8 @@ on:
         description: "Please mention the Jira ID for the release initiation (Mention if you're implementing the build and deployment on REG/PRL/PRD)"
         required: true
         type: string
-      Promote2tst:
-        description: "Promote to QA?"
-        required: true
-        type: boolean
-      Promote2drmt:
-        description: "Promote to Dormant?"
-        required: true
-        type: boolean
-      Promote2live:
-        description: "Promote to Live?"
+      Promote2others:
+        description: "Do you want to Promote this to Pre-Prod, Dormant and Live upon approvals?"
         required: true
         type: boolean
       Debug:
