@@ -116,3 +116,29 @@ jobs:
       debug: ${{ inputs.Debug }}
       promote2prd: ${{ inputs.Promote2prd }}
     secrets: inherit
+
+  Sign-off:
+    name: sign-off
+    runs-on: ubuntu-latest
+    needs: [basic-checks,CI-Build,CD-Deployment]
+    if: ${{ needs.CD-Deployment.outputs.marker == "completed" }}
+    steps:
+      - name: Post release validation to be completed
+        id: prd-rel-approval
+        uses: dhakshna-learning/ci-cd-automation/.github/actions/post-comments@master
+        with:
+          mode: "wait"
+          issue-number: ${{ inputs.issue_number  }}
+          secret: ${{ secrets.PEM_KEY }}
+          approvers: ${{ needs.wait-for-approval.outputs.test_ids }}
+          approval-message: "We're almost completed the release, thanks everyone for your support😊.\n Support Team - Please complete the post deployment activities and approve this request to stay live 🛫."
+          labels: "Post-Production"  
+
+      - name: Update sign-off comments
+        uses: dhakshna-learning/ci-cd-automation/.github/actions/close-issues@master
+        with:
+          mode: "close"
+          issue-number: ${{ inputs.issue_number  }}
+          secret: ${{ secrets.PEM_KEY }}
+          approval-message: "Happy to stay live 🛫. Signing off"
+          approvers: ${{ needs.basic-checks.outputs.devops_ids }}
