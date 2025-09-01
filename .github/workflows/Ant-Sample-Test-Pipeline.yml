@@ -1,4 +1,4 @@
-name: Application Release Pipeline
+name: Application CI/CD Pipeline
 
 on:
   workflow_dispatch:  
@@ -94,7 +94,7 @@ jobs:
 
   CI-Build:
     name: Application Build Pipeline
-    needs: [Snyk-Test]
+    needs: [basic-checks,Snyk-Test]
     uses: dhakshna-learning/ci-cd-automation/.github/workflows/ant-build.yml@master
     with:
       ant_target: ${{ inputs.Action }}
@@ -107,7 +107,7 @@ jobs:
 
   CD-Deployment:
     name: Application Deployment Pipeline
-    needs: [CI-Build]
+    needs: [basic-checks,CI-Build]
     uses: dhakshna-learning/ci-cd-automation/.github/workflows/ant-deployment.yml@master
     with:
       environment: ${{ inputs.Environment }}
