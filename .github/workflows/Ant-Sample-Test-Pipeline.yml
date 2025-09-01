@@ -121,7 +121,7 @@ jobs:
     name: sign-off
     runs-on: ubuntu-latest
     needs: [basic-checks,CI-Build,CD-Deployment]
-    if: ${{ needs.CD-Deployment.outputs.marker == "completed" }}
+    if: ${{ needs.CD-Deployment.outputs.marker == 'completed' }}
     steps:
       - name: Post release validation to be completed
         id: prd-rel-approval
