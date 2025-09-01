@@ -32,6 +32,8 @@ on:
         required: false
         type: boolean       
 
+run-name: Application ${{ inputs.Environment }} Pipeline
+
 permissions:
   id-token: write  
   contents: read
