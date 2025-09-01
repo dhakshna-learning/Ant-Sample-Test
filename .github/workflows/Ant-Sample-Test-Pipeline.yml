@@ -15,10 +15,8 @@ on:
         required: true
         type: choice
         options:
-          - Tst
-          - QA
-          - Drmt
-          - Live
+          - Dev
+          - Release
       jira_ref:
         description: "Please mention the Jira ID for the release initiation (Mention if you're implementing the build and deployment on REG/PRL/PRD)"
         required: true
@@ -52,14 +50,8 @@ jobs:
           BRANCH: ${{ github.ref }}
         run: |
           branch_check() {
-            if [ "$ENVIRONMENT" == "Live" ] && [ "$BRANCH" != "refs/heads/master" ]; then
-              echo "❌ Deployments to LIVE are only allowed from master branch."
-              exit 1
-            elif [ "$ENVIRONMENT" == "Drmt" ] && [ "$BRANCH" != "refs/heads/master" ]; then
-              echo "❌ Deployments to DRMT are only allowed from master branch."
-              exit 1
-            elif [ "$ENVIRONMENT" == "Tst" ] && [ "$BRANCH" != "refs/heads/master" ]; then
-              echo "❌ Deployments to TST are only allowed from master branch."
+            if [ "$ENVIRONMENT" == "Release" ] && [ "$BRANCH" != "refs/heads/master" ]; then
+              echo "❌ Deployments to Release are only allowed from master branch."
               exit 1
             elif [ "$ENVIRONMENT" == "Dev" ] && [[ ! "$BRANCH" =~ refs/heads/feat/.* ]]; then
               echo "❌ Deployments to DEV are only allowed from feature branches."
@@ -75,7 +67,7 @@ jobs:
           if [ "$ENVIRONMENT" != "Dev" ] && { [ -z "$JIRA_REF" ] || [ "$JIRA_REF" == "null" ] || [ "$JIRA_REF" == "N/A" ] || [ "$JIRA_REF" == "na" ]; }; then
             echo "❌ Jira reference is required for environment $ENVIRONMENT."
             exit 1
-          fi
+          fi            
 
           echo "✅ All inputs are valid."
 
@@ -89,7 +81,7 @@ jobs:
 
   Snyk-Test:
     name: Snyk Scan Artifacts
-    needs: basic-checks
+    needs: [basic-checks]
     uses: dhakshna-learning/ci-cd-automation/.github/workflows/snyk.yml@master
     with:
       environment: ${{ inputs.Environment }}
@@ -98,7 +90,7 @@ jobs:
 
   CI-Build:
     name: Application Build Pipeline
-    needs: [basic-checks, Snyk-Test]
+    needs: [Snyk-Test]
     uses: dhakshna-learning/ci-cd-automation/.github/workflows/ant-build.yml@master
     with:
       ant_target: ${{ inputs.Action }}
@@ -111,7 +103,7 @@ jobs:
 
   CD-Deployment:
     name: Application Deployment Pipeline
-    needs: [basic-checks, Snyk-Test, CI-Build]
+    needs: [CI-Build]
     uses: dhakshna-learning/ci-cd-automation/.github/workflows/ant-deployment.yml@master
     with:
       environment: ${{ inputs.Environment }}
