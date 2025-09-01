@@ -113,5 +113,5 @@ jobs:
       environment: ${{ inputs.Environment }}
       jira_ref: ${{ inputs.JIRA_REF }}
       issue_number: ${{ needs.CI-Build.outputs.issue_number }}
-      approvers: ${{ needs.basic-checks.outputs.devops_ids }}
+      debug: ${{ inputs.Debug }}
     secrets: inherit
