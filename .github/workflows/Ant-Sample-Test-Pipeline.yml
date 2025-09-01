@@ -114,4 +114,5 @@ jobs:
       jira_ref: ${{ inputs.JIRA_REF }}
       issue_number: ${{ needs.CI-Build.outputs.issue_number }}
       debug: ${{ inputs.Debug }}
+      promote2prd: ${{ inputs.Promote2prd }}
     secrets: inherit
