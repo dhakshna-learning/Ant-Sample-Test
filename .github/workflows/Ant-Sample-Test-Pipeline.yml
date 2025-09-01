@@ -15,8 +15,8 @@ on:
         required: true
         type: choice
         options:
-          - Dev
           - Tst
+          - QA
           - Drmt
           - Live
       jira_ref:
@@ -24,15 +24,15 @@ on:
         required: false
         type: string
       Promote2tst:
-        description: "Deploy the application in QA?"
+        description: "Promote to QA?"
         required: true
         type: boolean
       Promote2drmt:
-        description: "Deploy the application in Dormant?"
+        description: "Promote to Dormant?"
         required: true
         type: boolean
       Promote2live:
-        description: "Deploy the application in Live?"
+        description: "Promote to Live?"
         required: true
         type: boolean
       Debug:
