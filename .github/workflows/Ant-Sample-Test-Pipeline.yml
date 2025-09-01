@@ -21,7 +21,7 @@ on:
           - Live
       jira_ref:
         description: "Please mention the Jira ID for the release initiation (Mention if you're implementing the build and deployment on REG/PRL/PRD)"
-        required: false
+        required: true
         type: string
       Promote2tst:
         description: "Promote to QA?"
